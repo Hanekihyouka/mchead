@@ -16,7 +16,8 @@ final class Api
     {
         try {
             $uuid = Uuid::normalize(self::requestedUuid());
-            $service = new Service(new Storage(ROOT_DIR), new MojangClient());
+            $camera = Config::camera();
+            $service = new Service(new Storage(ROOT_DIR), new MojangClient(), $camera['yaw'], $camera['pitch']);
 
             $path = $kind === 'head' ? $service->head($uuid) : $service->body($uuid);
             self::sendPng($path);

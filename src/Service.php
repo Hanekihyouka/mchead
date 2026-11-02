@@ -21,9 +21,15 @@ final class Service
     /** @var array{0: int, 1: int} */
     private const BODY_SIZE = [512, 768];
 
+    /**
+     * @param float $yaw camera yaw in radians
+     * @param float $pitch camera pitch in radians
+     */
     public function __construct(
         private readonly Storage $storage,
         private readonly MojangClient $mojang,
+        private readonly float $yaw,
+        private readonly float $pitch,
     ) {
     }
 
@@ -38,7 +44,14 @@ final class Service
         }
 
         $skin = $this->loadSkin($uuid, null);
-        $image = Rasterizer::render($skin, Model::head(), self::HEAD_SIZE[0], self::HEAD_SIZE[1]);
+        $image = Rasterizer::render(
+            $skin,
+            Model::head(),
+            self::HEAD_SIZE[0],
+            self::HEAD_SIZE[1],
+            $this->yaw,
+            $this->pitch,
+        );
 
         return $this->storage->save('head', $uuid, Image::encodePng($image));
     }
@@ -66,6 +79,8 @@ final class Service
             Model::body($profile['slim']),
             self::BODY_SIZE[0],
             self::BODY_SIZE[1],
+            $this->yaw,
+            $this->pitch,
         );
 
         return $this->storage->save('body', $uuid, Image::encodePng($image));
