@@ -1,0 +1,5 @@
+Options -Indexes
+RewriteEngine On
+
+# /head/<uuid>[.png] and /body/<uuid>[.png] -> head.php / body.php
+RewriteRule ^(head|body)/([0-9a-fA-F-]{32,36})(?:\.png)?$ $1.php?uuid=$2 [QSA,L]

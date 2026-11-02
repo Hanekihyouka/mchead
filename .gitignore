@@ -1,0 +1,6 @@
+
+# mc-skin-render build output and runtime cache (generated, not committed)
+/skin/*.png
+/head/*.png
+/body/*.png
+*.tmp
