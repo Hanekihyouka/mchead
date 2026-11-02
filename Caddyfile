@@ -1,0 +1,23 @@
+localhost {
+	root * {/var/www/path}
+	php_fastcgi unix//var/run/php/php8.4-fpm.sock
+	file_server
+
+	@private path /src/* /tests/* /.git/* /bootstrap.php
+	handle @private {
+		respond 404
+	}
+
+	# /head/<uuid>[.png] and /body/<uuid>[.png] -> head.php / body.php
+	@head path_regexp head ^/head/([0-9a-fA-F-]{32,36})(?:\.png)?$
+	handle @head {
+		rewrite * /head.php?uuid={re.head.1}
+	}
+
+	@body path_regexp body ^/body/([0-9a-fA-F-]{32,36})(?:\.png)?$
+	handle @body {
+		rewrite * /body.php?uuid={re.body.1}
+	}
+
+	# /head.php/<uuid>, /body.php?uuid=... and anything else that is a PHP script
+}
